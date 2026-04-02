@@ -7,7 +7,8 @@ import subprocess
 from src.utils.interactive_helper import InteractiveHelper
 from src.utils.formatter import print_custom_fields
 from src.utils.formatter import print_table
-
+from src.utils.logger import get_logger
+logger=get_logger(__name__)
 class TableChecker:
     def __init__(self, db_connector,parent=None):
         self.db = db_connector
@@ -102,7 +103,7 @@ class TableChecker:
     def InteractiveByRelationTable(self):
         relation_tables = self.config.get_Relation_tables(self.tableName)
         if not relation_tables:
-            print("没有配置关联表")
+            logger.warning(f"{self.tableName}: 没有配置关联表")
             return
         
         idx,selected = self.ihelper.select_from_list(f"{self.tableName} 关联表选择", [item["table_name"] for item in relation_tables], "请选择关联表")
@@ -128,7 +129,7 @@ class TableChecker:
         relation_tables = self.config.get_Relation_tables(self.tableName)
   
         if not relation_tables:
-            print(f"{table_name}没有配置关联表")
+            logger.warning(f"{table_name}没有配置关联表")
             return
         for relation_table in relation_tables:
             if( self.CheckParentSearch(relation_table["table_name"])):
@@ -137,8 +138,12 @@ class TableChecker:
             relationTableChecker=TableChecker(self.db,self)
             relationTableChecker.SearhRelationTable(relation_table["table_name"],relation_table.get("query_field", relation_table["field"]), relation_table["field"],self.rows)
     def CheckParentSearch(self,table_name:str)->bool:
+        logger.debug(f"检查 {self.tableName} 的父级 {table_name}")
         parent=self.parent
         if parent :
+            logger.debug(f"当前父级 {parent.tableName}")
+            if parent.rows and len([row for row in parent.rows if  table_name in row]):
+                return True
             if parent.tableName==table_name:
                 return True
             else:
