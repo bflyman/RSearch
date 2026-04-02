@@ -1,0 +1,9 @@
+# MSSQL 连接
+pyodbc>=4.0.0
+
+# YAML 配置文件解析
+pyyaml>=6.0
+
+# 工具
+colorama>=0.4.6      # Windows 终端颜色支持（可选）
+

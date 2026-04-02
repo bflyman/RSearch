@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# 虚拟环境
+.venv/
+venv/
+env/
+ENV/
+
+# 数据文件（通常不提交到版本库）
+data/raw/*
+data/processed/*
+output/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!output/.gitkeep
+
+# 配置中的敏感信息
+config/*.local.*
+.env
+.env.local
+*.secret
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 日志
+*.log
+logs/
+
+# 系统文件
+.DS_Store
+Thumbs.db

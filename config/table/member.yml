@@ -1,0 +1,36 @@
+member:
+
+  display_name: "会员表"
+  search_menu:
+    - display_name: "按 Member Code 查询"
+      search_fields: member_code
+    
+  scenarios:
+    - name: "常规数据显示"
+      description: "检查金额"
+      fields:
+        - member_key
+        - member_id
+        - member_name
+        - member_type
+        - member_status
+  relation_tables:
+    - table_name: "voucher"
+      talbe_display_name: "凭证表"
+      field: "member_key"
+    - table_name: "BowtieMemberDetail"
+      talbe_display_name: "BT前缀的SchemeCode Benefit表"
+      field: "member_key"
+      query_field: "memberkey"
+    - table_name: "CpyChinaLife"
+      talbe_display_name: "客户方案表"
+      field: "member_code"
+      query_field: "NW_MB_CDE"
+member_scheme:
+  relation_tables:
+    - table_name: "member"
+      talbe_display_name: "会员表"
+      field: "member_key"
+    - table_name: "client_scheme"
+      talbe_display_name: "客户方案表"
+      field: "client_scheme_key"

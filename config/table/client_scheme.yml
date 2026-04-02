@@ -1,0 +1,224 @@
+# 检查场景配置文件
+# 按表分组配置检查场景
+# 
+# 结构说明：
+#   表名:
+#     display_name: 表显示名称
+#     scenarios: 检查场景列表
+#       - name: 场景名称
+#         description: 场景详细说明
+#         fields: 要显示的字段列表（直接写字段名）
+
+# ========================================
+# Voucher 表配置
+# ========================================
+voucher:
+  display_name: "凭证表"
+  search_menu:
+    - display_name: "按 .No 查询服务"
+      search_fields: vo_no
+  relation_tables:
+    - table_name: "vo_service"
+      talbe_display_name: "服务表"
+      field: "voucher_key"
+    - table_name: "clinic_doctor"
+      talbe_display_name: "服务费用表"
+      field: "clinic_doctor_key"
+    - table_name: "member"
+      talbe_display_name: "会员表"
+      field: "member_key"
+    - table_name: "client_scheme"
+      talbe_display_name: "客户方案表"
+      field: "client_scheme_key"
+    
+  scenarios:
+    - name: "创建数据检查"
+      description: "检查 Voucher 创建时的关键数据，包括创建时间、创建人、状态标记"
+      fields:
+        - voucher_key
+        - vo_no
+        - create_date
+        - create_by
+    - name: "状态检查"
+      description: "检查 Voucher 的状态流转信息，包括状态1、状态2及时间戳"
+      fields:
+        - voucher_key
+        - vo_no
+        - status
+        - sub_status
+        - status_time
+        - approve_user
+
+    - name: "基本信息检查"
+      description: "检查 Voucher 的基本信息，包括编号、单号、总金额"
+      fields:
+        - voucher_key
+        - vo_no
+        - total_amount
+        - currency
+        - customer_id
+        - customer_name
+
+    - name: "完整信息检查"
+      description: "检查 Voucher 的所有关键信息"
+      fields:
+        - voucher_key
+        - vo_no
+        - create_time
+        - create_user
+        - status
+        - sub_status
+        - status_time
+        - approve_user
+        - total_amount
+        - currency
+        - customer_id
+        - customer_name
+
+# ========================================
+# VO_SERVICE 表配置
+# ========================================
+vo_service:
+  display_name: "服务表"
+  scenarios:
+    - name: "常规数据显示"
+      description: "检查 Voucher 关联的服务基本信息，包括服务名称、类型、价格"
+      fields:
+        - vo_service_key
+        - voucher_key
+        - service_sub_type_key
+        - vo_service_used
+  relation_tables:
+    - table_name: "vo_procedure"
+      talbe_display_name: "化验/影像表"
+      field: "vo_service_key"
+
+
+  
+# ========================================
+# VO_PROCEDURE 表配置
+# ========================================
+vo_procedure:
+  display_name: "流程表"
+  scenarios:
+    - name: "常规数据显示"
+      description: "检查金额"
+      fields:
+        - vo_procedure_key
+        - vo_service_key
+        - procedure_master_key
+        - vo_proc_unit_cost
+        - vo_proc_quantity
+        - vo_proc_bill_amount
+        - vo_proc_claim_amount
+        - vo_proc_copayment
+        - vo_proc_req_amount
+
+member:
+
+  display_name: "会员表"
+  search_menu:
+    - display_name: "按 Member Code 查询"
+      search_fields: member_code
+    
+  scenarios:
+    - name: "常规数据显示"
+      description: "检查金额"
+      fields:
+        - member_key
+        - member_id
+        - member_name
+        - member_type
+        - member_status
+  relation_tables:
+    - table_name: "voucher"
+      talbe_display_name: "凭证表"
+      field: "member_key"
+    - table_name: "BowtieMemberDetail"
+      talbe_display_name: "BT前缀的SchemeCode Benefit表"
+      field: "member_key"
+      query_field: "memberkey"
+    - table_name: "CpyChinaLife"
+      talbe_display_name: "客户方案表"
+      field: "member_code"
+      query_field: "NW_MB_CDE"
+member_scheme:
+  relation_tables:
+    - table_name: "member"
+      talbe_display_name: "会员表"
+      field: "member_key"
+    - table_name: "client_scheme"
+      talbe_display_name: "客户方案表"
+      field: "client_scheme_key"
+      
+client_scheme:
+  search_menu:
+    - display_name: "按 Scheme Code 查询"
+      search_fields: client_scheme_code
+  relation_tables:
+    - table_name: "member_scheme"
+      talbe_display_name: "会员方案表"
+      field: "client_scheme_key"
+clinic_doctor:
+  display_name: "门诊医生表"
+  scenarios:
+    - name: "常规数据显示"
+      description: "检查金额"
+      fields:
+        - clinic_doctor_key
+        - voucher_key
+        - doctor_id
+        - doctor_name
+        - clinic_date
+        - clinic_time
+        - clinic_amount
+  relation_tables:
+    - table_name: "clinic"
+      talbe_display_name: "门诊表"
+      field: "clinic_key"
+clinic:
+  display_name: "门诊表"
+  relation_tables:
+    - table_name: "clinic_lab_group"
+      talbe_display_name: "门诊LAB分组表"
+      field: "clinic_lab_group_key"
+clinic_lab_group:
+  display_name: "门诊LAB分组表"
+  search_menu:
+    - display_name: "按 Code 查询"
+      search_fields: "clinic_lab_group_code"
+  relation_tables:
+    - table_name: "clinic"
+      talbe_display_name: "门诊表"
+      field: "clinic_lab_group_key"
+# ========================================
+# 使用说明
+# ========================================
+# 1. 配置结构：
+#    表名（如 voucher）:
+#      display_name: 表的显示名称
+#      scenarios: 检查场景列表
+#        - name: 场景名称（如 "创建数据检查"）
+#          description: 场景详细说明
+#          fields: 字段列表（直接写字段名）
+#            - field_name1
+#            - field_name2
+#
+# 2. 使用方式：
+#    - 选择表 → 选择检查场景 → 显示对应的字段列表
+#    - 字段直接列出，不需要额外的 label 和 description
+#    - 通过场景名称和说明来理解要检查的内容
+#
+# 3. 优势：
+#    - 按表分组：清晰管理每个表的多个检查场景
+#    - 场景化：不同检查目的配置不同字段组合
+#    - 简洁：字段用简单列表表示
+#    - 可扩展：随时添加新的检查场景
+#
+# 4. 添加新场景：
+#    在对应表下按相同格式添加即可：
+#    - name: "新场景名称"
+#      description: "新场景详细说明"
+#      fields:
+#        - field_name1
+#        - field_name2

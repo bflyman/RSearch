@@ -1,0 +1,11 @@
+# 主菜单配置文件
+# 包含显示名称、表名和备注
+menu:
+  - display_name: "Voucher"
+    table_name: "voucher"
+    remark: "查询 Voucher "
+  - display_name: "Member"
+    table_name: "member"
+    remark: "Member 表相关检查"
+
+  
