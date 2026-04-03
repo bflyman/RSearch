@@ -17,6 +17,7 @@ class TableChecker:
         self.ihelper=InteractiveHelper()
         self.tableName=""
         self.parent=parent
+        self.relation_excluded_tables=None
 
     def Interactive(self, table_name: str) -> Optional[List[Dict[str, Any]]]:
         self.tableName=table_name
@@ -41,6 +42,7 @@ class TableChecker:
             elif idx ==1:
                  self.InteractiveByRelationTable()
             elif idx ==2:
+                self.relation_excluded_tables=self.config.get_relation_excluded_tables(self.tableName)
                 self.SearhRelationTable(self.tableName,None, None, self.rows)
             elif idx ==4:
                 import json
@@ -127,7 +129,7 @@ class TableChecker:
                     self.rows.extend(temp)
             print(f'{table_name} -查询结果: {len(self.rows)} 条记录')        
         relation_tables = self.config.get_Relation_tables(self.tableName)
-  
+
         if not relation_tables:
             logger.warning(f"{table_name}没有配置关联表")
             return
@@ -141,6 +143,9 @@ class TableChecker:
         logger.debug(f"检查 {self.tableName} 的父级 {table_name}")
         parent=self.parent
         if parent :
+            if parent.relation_excluded_tables and table_name in parent.relation_excluded_tables:
+                logger.debug(f"父级 {parent.tableName} 配置了排除表 {parent.relation_excluded_tables}，跳过检查 {table_name}")
+                return True
             logger.debug(f"当前父级 {parent.tableName}")
             if parent.rows and len([row for row in parent.rows if  table_name in row]):
                 return True

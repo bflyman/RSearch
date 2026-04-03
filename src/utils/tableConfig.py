@@ -71,11 +71,24 @@ class TableConfig:
         Returns:
             表的显示名称，如果不存在则返回 None
         """
-        table_config = self.config_data.get(str.lowertable_name)
+        table_config = self.config_data.get(table_name)
         if table_config:
             return table_config.get("display_name")
         return None
-    
+    def get_relation_excluded_tables(self, table_name: str) -> List[str]:
+        """
+        获取表的显示名称
+        
+        Args:
+            table_name: 表名
+            
+        Returns:
+            表的显示名称，如果不存在则返回 None
+        """
+        table_config = self.config_data.get(table_name)
+        if table_config:
+            return table_config.get("relation_exclued_tables")
+        return None
     def get_search_menu(self, table_name: str) -> List[Dict[str, Any]]:
         """
         获取指定表的搜索菜单配置
